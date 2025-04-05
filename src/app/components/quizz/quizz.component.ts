@@ -1,10 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import quizz_questions from "../../../assets/data/quizz_questions.json"
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+
 
 
 @Component({
   selector: 'app-quizz',
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './quizz.component.html',
   styleUrl: './quizz.component.css'
 })
@@ -60,8 +63,26 @@ export class QuizzComponent implements OnInit {
     if(this.questionMaxIndex > this.questionIndex){
         this.questionSelected = this.questions[this.questionIndex]
     }else{
-      
+      const finalAnswer:string = await this.checkResult(this.answers)
+      this.finished = true
+      this.answerSelected = quizz_questions.results[finalAnswer as keyof typeof quizz_questions.results ]
     }
+  }
+
+  async checkResult(anwsers:string[]){
+
+    const result = anwsers.reduce((previous, current, i, arr)=>{
+        if(
+          arr.filter(item => item === previous).length >
+          arr.filter(item => item === current).length
+        ){
+          return previous
+        }else{
+          return current
+        }
+    })
+
+    return result
   }
 
   // !  //
